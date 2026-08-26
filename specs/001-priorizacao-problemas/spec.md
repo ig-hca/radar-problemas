@@ -10,6 +10,25 @@
 
 **Input**: User description: "Um aplicativo para uma pessoa em fase de descoberta de problemas registrar e comparar candidatos a problema, e decidir com base em evidência qual perseguir, em vez de decidir por intuição. Quem usa: um estudante empreendedor que acabou de sair de entrevistas de campo e tem uma lista bagunçada de dores anotadas, e precisa comparar essas dores entre si. Para quê: transformar impressões soltas em uma ordenação defensável, para justificar publicamente por que escolheu um problema e não outro."
 
+## Clarifications
+
+### Session 2026-08-26
+
+- Q: No arquivo exportado, como o score deve aparecer e o que separa as colunas? → A: Score
+  com vírgula decimal (`3,50`), igual à tela, e ponto-e-vírgula separando as colunas.
+- Q: Como o aplicativo deve mostrar que um problema está entre os três primeiros? → A: Cada
+  uma das três primeiras linhas exibe a posição escrita (`1º`, `2º`, `3º`) além da
+  diferenciação visual, para que o destaque seja conferível por texto e não dependa de cor.
+- Q: O que deve acontecer se o aplicativo não conseguir gravar um registro no
+  armazenamento? → A: Exibir mensagem clara de falha ao salvar e não registrar o problema;
+  a lista permanece exatamente como estava, sem gravação parcial.
+- Q: Quando o usuário aciona a exportação, para onde vai o arquivo? → A: É entregue ao
+  usuário como um download, caindo na pasta de downloads do dispositivo; o usuário não
+  precisa localizar o arquivo em pasta do aplicativo nem informar caminho de destino.
+- Q: Se o título ou a descrição contiver ponto-e-vírgula ou quebra de linha, o que o arquivo
+  exportado faz com esse texto? → A: O campo é preservado entre aspas, mantendo o texto
+  exatamente como digitado em uma única célula; nada é recusado nem substituído.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Registrar um candidato a problema e ver seu score (Priority: P1)
@@ -44,9 +63,9 @@ decimais.
 ### User Story 2 - Comparar os candidatos em uma ordenação defensável (Priority: P2)
 
 Com várias dores já registradas, o estudante precisa saber quais delas se destacam. Ele vê
-todos os problemas listados do maior para o menor score, com os três primeiros
-visualmente destacados, e usa essa ordenação para explicar publicamente por que vai
-perseguir um problema e não outro.
+todos os problemas listados do maior para o menor score, com os três primeiros marcados
+com sua posição (`1º`, `2º`, `3º`) e destacados, e usa essa ordenação para explicar
+publicamente por que vai perseguir um problema e não outro.
 
 **Why this priority**: É o propósito central do aplicativo — a decisão baseada em evidência.
 Depende da História 1 existir, mas é ela que transforma registros isolados em uma escolha
@@ -54,19 +73,21 @@ justificável.
 
 **Independent Test**: Pode ser testada registrando quatro ou mais problemas com scores
 diferentes e verificando que a ordem exibida é decrescente por score e que exatamente as
-três primeiras posições aparecem destacadas.
+três primeiras posições aparecem marcadas com `1º`, `2º` e `3º` e destacadas.
 
 **Acceptance Scenarios**:
 
 1. **Given** cinco problemas registrados com scores distintos, **When** o usuário visualiza
    a lista, **Then** os problemas aparecem do maior para o menor score.
 2. **Given** cinco problemas registrados, **When** o usuário visualiza a lista, **Then** os
-   três primeiros da ordenação estão visualmente destacados e os demais não.
+   três primeiros da ordenação aparecem marcados com `1º`, `2º` e `3º` e destacados, e as
+   demais linhas não trazem marca de posição nem destaque.
 3. **Given** dois problemas registrados com o mesmo score, **When** o usuário visualiza a
    lista, **Then** ambos aparecem em posições adjacentes, o registrado primeiro aparecendo
    antes, e a ordem se mantém a mesma a cada nova visualização.
 4. **Given** apenas dois problemas registrados, **When** o usuário visualiza a lista,
-   **Then** os dois aparecem destacados e nenhum erro é apresentado.
+   **Then** os dois aparecem marcados com `1º` e `2º` e destacados, nenhuma marca `3º` é
+   exibida e nenhum erro é apresentado.
 
 ---
 
@@ -122,6 +143,10 @@ reabrindo e conferindo que os três continuam presentes, com os mesmos dados e a
 3. **Given** que os dados armazenados não podem ser lidos (ausentes, vazios ou corrompidos),
    **When** o usuário abre o aplicativo, **Then** uma mensagem compreensível é exibida, sem
    expor detalhes internos, e o aplicativo permanece utilizável para novos registros.
+4. **Given** que o armazenamento não pode ser gravado (sem permissão de escrita, disco cheio
+   ou arquivo indisponível), **When** o usuário confirma um novo registro, **Then** uma
+   mensagem compreensível de falha ao salvar é exibida, sem expor detalhes internos, o
+   problema não passa a constar na lista e nenhum dado parcial fica gravado.
 
 ---
 
@@ -140,13 +165,19 @@ uma única vez e abrindo o arquivo resultante em um editor de planilhas comum.
 **Acceptance Scenarios**:
 
 1. **Given** quatro problemas registrados, **When** o usuário aciona a exportação uma única
-   vez, **Then** ele obtém um arquivo contendo os quatro problemas, com uma linha por
-   problema e uma linha de cabeçalho identificando as colunas.
-2. **Given** o arquivo exportado, **When** ele é aberto em um editor de planilhas comum,
-   **Then** título, descrição, público afetado, as quatro notas e o score aparecem em
-   colunas separadas, sem ajuste manual.
+   vez, **Then** o arquivo é baixado para a pasta de downloads do dispositivo contendo os
+   quatro problemas, com uma linha por problema e uma linha de cabeçalho identificando as
+   colunas, sem que o usuário precise informar caminho ou procurar o arquivo.
+2. **Given** o arquivo exportado, **When** ele é aberto em um editor de planilhas comum
+   configurado em português, **Then** título, descrição, público afetado, as quatro notas e
+   o score aparecem em colunas separadas, sem ajuste manual, e o score aparece com vírgula
+   decimal (ex.: `3,50`) na sua própria coluna.
 3. **Given** problemas com scores diferentes, **When** o usuário exporta a lista, **Then** as
    linhas aparecem na mesma ordem decrescente de score exibida na tela.
+4. **Given** um problema cuja descrição contém ponto-e-vírgula e quebra de linha, **When** o
+   usuário exporta a lista e abre o arquivo, **Then** a descrição aparece inteira em uma
+   única célula, idêntica ao que foi digitado, e as demais colunas da linha permanecem
+   alinhadas.
 
 ---
 
@@ -154,8 +185,8 @@ uma única vez e abrindo o arquivo resultante em um editor de planilhas comum.
 
 - **Lista vazia**: com nenhum problema registrado, a exportação produz um arquivo apenas com
   a linha de cabeçalho, e a lista exibe uma indicação de lista vazia em vez de erro.
-- **Menos de três problemas**: o destaque se aplica a quantos existirem (um ou dois), sem
-  erro e sem posições vazias.
+- **Menos de três problemas**: o destaque e as marcas de posição se aplicam a quantos
+  existirem (só `1º`, ou `1º` e `2º`), sem erro e sem posições vazias.
 - **Empate de score**: problemas com o mesmo score mantêm entre si a ordem de registro (o
   mais antigo primeiro), de modo que a ordenação exibida seja sempre a mesma para os mesmos
   dados.
@@ -170,8 +201,13 @@ uma única vez e abrindo o arquivo resultante em um editor de planilhas comum.
   obrigatórios.
 - **Armazenamento ilegível**: arquivo ausente, vazio ou malformado gera mensagem
   compreensível para o usuário, sem expor detalhes técnicos, e não derruba o aplicativo.
+- **Falha ao gravar**: se o armazenamento não puder ser escrito (sem permissão, disco cheio,
+  arquivo indisponível), o usuário recebe mensagem compreensível, o problema não é
+  registrado e a lista permanece idêntica à de antes da tentativa.
 - **Textos longos**: títulos e descrições extensos são preservados integralmente no registro
   e na exportação.
+- **Texto com ponto-e-vírgula, aspas ou quebra de linha**: aceito normalmente no registro e
+  preservado na exportação dentro de uma única célula, sem desalinhar as colunas do arquivo.
 
 ## Requirements *(mandatory)*
 
@@ -196,16 +232,33 @@ uma única vez e abrindo o arquivo resultante em um editor de planilhas comum.
   score.
 - **FR-009**: O sistema MUST desempatar problemas de mesmo score pela ordem de registro (o
   registrado primeiro aparece antes), garantindo ordenação estável e reproduzível.
-- **FR-010**: O sistema MUST destacar visualmente as três primeiras posições da ordenação,
-  ou todas as posições existentes quando houver menos de três problemas.
+- **FR-010**: O sistema MUST destacar as três primeiras posições da ordenação, ou todas as
+  posições existentes quando houver menos de três problemas.
+- **FR-010a**: O destaque MUST incluir a posição escrita em texto (`1º`, `2º`, `3º`) na
+  linha do problema, além de qualquer diferenciação visual, de modo que seja possível
+  conferir quem está destacado sem depender de cor.
+- **FR-010b**: A informação de quais problemas ocupam as três primeiras posições MUST ser
+  derivada da ordenação e disponibilizada junto com cada problema, e não decidida pela
+  camada de apresentação.
 - **FR-011**: O sistema MUST preservar os problemas registrados entre execuções, de modo que
   continuem disponíveis com os mesmos dados após o aplicativo ser fechado e reaberto.
 - **FR-012**: O sistema MUST permitir que, com uma única ação do usuário, a lista completa de
   problemas seja obtida em um arquivo que abre diretamente em um editor de planilhas comum,
   sem exigir nenhum ajuste manual de formatação por parte do usuário.
+- **FR-012a**: A exportação MUST entregar o arquivo ao usuário como um download, indo para a
+  pasta de downloads do dispositivo, sem exigir que ele localize o arquivo em alguma pasta
+  do aplicativo nem informe um caminho de destino.
 - **FR-013**: O arquivo obtido na exportação MUST apresentar uma linha de cabeçalho
   identificando as colunas e, para cada problema, título, descrição, público afetado, as
   quatro notas e o score em colunas separadas, na mesma ordem decrescente exibida na tela.
+- **FR-013a**: O arquivo exportado MUST apresentar o score com vírgula como separador
+  decimal e duas casas (`3,50`), idêntico ao exibido na tela, e MUST usar ponto-e-vírgula
+  como separador de colunas, de modo que a vírgula do score nunca seja confundida com uma
+  troca de coluna ao abrir o arquivo.
+- **FR-013b**: Campos de texto exportados que contenham ponto-e-vírgula, aspas ou quebra de
+  linha MUST ser delimitados por aspas no arquivo, preservando o texto exatamente como
+  digitado e mantendo-o em uma única célula ao ser aberto. O sistema MUST NOT recusar nem
+  substituir esses caracteres no momento do registro.
 - **FR-014**: O sistema MUST recusar o registro quando qualquer regra de validação (FR-002,
   FR-003) for violada, exibindo mensagem em português, em linguagem clara, que identifique o
   campo problemático e o que precisa ser corrigido.
@@ -216,6 +269,10 @@ uma única vez e abrindo o arquivo resultante em um editor de planilhas comum.
 - **FR-017**: O sistema MUST tratar armazenamento ausente, vazio ou malformado exibindo
   mensagem compreensível ao usuário, sem expor detalhes internos, e permanecendo utilizável
   para novos registros.
+- **FR-017a**: O sistema MUST tratar falha ao gravar no armazenamento (por exemplo, sem
+  permissão de escrita, disco cheio ou arquivo indisponível) exibindo mensagem compreensível
+  ao usuário, sem expor detalhes internos, sem considerar o problema registrado e sem deixar
+  gravação parcial: a lista permanece exatamente como estava antes da tentativa.
 - **FR-018**: O sistema MUST funcionar para um único usuário local, sem contas, sem login e
   sem qualquer dependência de conexão de rede ou serviço externo.
 
@@ -227,8 +284,9 @@ uma única vez e abrindo o arquivo resultante em um editor de planilhas comum.
   (todas de 1 a 5), e momento de registro (usado para desempate e para manter a ordem
   estável). O score não é informado pelo usuário: é derivado das quatro notas.
 - **Ranking**: a visão ordenada de todos os Candidatos a Problema, do maior para o menor
-  score, com as três primeiras posições destacadas. É derivada dos registros existentes, não
-  é armazenada nem editada diretamente.
+  score, em que cada item carrega sua posição na ordenação e a indicação de estar ou não
+  entre os três primeiros. É derivada dos registros existentes, não é armazenada nem
+  editada diretamente.
 
 ## Success Criteria *(mandatory)*
 
@@ -246,7 +304,8 @@ uma única vez e abrindo o arquivo resultante em um editor de planilhas comum.
 - **SC-005**: Após fechar e reabrir o aplicativo, 100% dos problemas registrados reaparecem
   com os mesmos dados, os mesmos scores e a mesma ordem.
 - **SC-006**: A lista completa é exportada com uma única ação do usuário e abre em um editor
-  de planilhas comum sem nenhum ajuste manual de formatação.
+  de planilhas comum configurado em português sem nenhum ajuste manual de formatação, com
+  cada campo em sua própria coluna.
 - **SC-007**: Uma terceira pessoa, olhando apenas o arquivo exportado, consegue reproduzir a
   ordenação apresentada e explicar por que o primeiro colocado ficou à frente do segundo.
 - **SC-008**: Em uma sessão de uso, o usuário consegue apontar qual problema vai perseguir e
@@ -269,12 +328,15 @@ uma única vez e abrindo o arquivo resultante em um editor de planilhas comum.
 - Em caso de empate no score, a ordem de registro decide, para que a ordenação seja sempre
   a mesma para os mesmos dados. O usuário não especificou desempate.
 - O destaque das três primeiras posições é posicional: destacam-se as três primeiras linhas
-  da ordenação, mesmo que haja empate na terceira posição.
+  da ordenação, mesmo que haja empate na terceira posição. A marca de posição (`1º`, `2º`,
+  `3º`) segue a mesma regra posicional, sem posições repetidas em caso de empate.
 - Havendo menos de três problemas registrados, todos os existentes ficam destacados.
 - "Formato que abre em qualquer planilha" é interpretado como um arquivo tabular que o
   usuário abre diretamente em um editor de planilhas comum, com colunas já separadas e sem
-  nenhuma etapa de importação ou conversão manual. Qual formato de arquivo atende a esse
-  comportamento é decisão do plano, não da spec.
+  nenhuma etapa de importação ou conversão manual. O separador de colunas é o
+  ponto-e-vírgula e o score sai com vírgula decimal (FR-013a), porque o público usa editor
+  de planilhas configurado em português. A extensão e o formato exato do arquivo que
+  atendem a esse comportamento são decisão do plano, não da spec.
 - Os dados são de um único usuário, guardados localmente na máquina onde o aplicativo roda,
   conforme a restrição de operação offline da constituição do projeto.
 - Títulos duplicados são permitidos: duas entrevistas podem gerar dores com o mesmo nome.
