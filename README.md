@@ -221,3 +221,16 @@ nenhum deles.
 - Os exemplos numéricos da spec misturavam ponto e vírgula como separador decimal;
   padronizados em vírgula, o que revelou a colisão com o delimitador do arquivo
   exportado e levou à escolha do ponto-e-vírgula.
+
+## Validação contra a spec
+
+| Critério | Como foi verificado | Passou |
+|---|---|---|
+| CA1 | Cadastro completo com título, descrição, público e as quatro notas | ✅ |
+| CA2 | Notas 3-4-4-4 exibindo score 3,75 | ✅ |
+| CA3 | Quatro problemas em ordem decrescente, 1º/2º/3º nos três primeiros | ✅ |
+| CA4 | App fechado e reaberto; dados preservados e acentos legíveis no JSON | ✅ |
+| CA5 | Um clique no botão de exportar; arquivo aberto no Excel com colunas separadas | ✅ |
+| CA6 | Cadastro sem título e com nota 7 recusados, com mensagem clara | ✅ |
+
+Suíte automatizada: 78 testes pytest, todos passando.
