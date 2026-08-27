@@ -196,13 +196,28 @@ O `requirements.txt` não fixa versões: declara apenas `streamlit` e `pytest`, 
 desenvolvimento, registradas aqui para reprodução em caso de diferença de comportamento.
 
 ---
-
 ## Uso de IA
 
-### Ferramentas utilizadas
+**Agente utilizado:** Claude Code (Opus 5), em todas as fases do ciclo SDD —
+constitution, specify, clarify, plan, tasks e implement. O ChatGPT/Claude via chat
+foi usado para revisar criticamente os artefatos entre uma fase e outra, sem gerar
+nenhum deles.
 
-### Onde a IA foi usada
+**O que foi corrigido na revisão humana:**
 
-### O que foi feito sem IA
-
-### Revisão e validação
+- A constituição gerada descrevia o projeto como individual, contrariando o enunciado.
+  Corrigida em todas as oito ocorrências antes do commit.
+- A constituição inicial fixava Python 3.14.7 exato; foi redefinida para 3.11+,
+  gerando a emenda de versão 2.0.0.
+- O agente propôs mensagem de commit fora do padrão exigido pelo enunciado
+  (`docs: amend constitution to v2.0.0 (...)`); mantivemos `docs: constitution`.
+- O `plan.md` nasceu com o cabeçalho apontando para uma branch inexistente; corrigido
+  para `develop`, alinhando spec e plano com o repositório real.
+- O commit `docs: plan` não existia — os artefatos do plano tinham ido junto no commit
+  de tasks. O histórico foi reescrito para separar as duas fases.
+- Na spec, o FR de exportação especificava "valores separados por vírgula", que é
+  decisão de formato e pertence ao plano; foi reescrito em termos de comportamento
+  observável.
+- Os exemplos numéricos da spec misturavam ponto e vírgula como separador decimal;
+  padronizados em vírgula, o que revelou a colisão com o delimitador do arquivo
+  exportado e levou à escolha do ponto-e-vírgula.
