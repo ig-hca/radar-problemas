@@ -1,0 +1,13 @@
+# Dados reais do usuário — o arquivo é criado na primeira gravação e não é versionado.
+data/problemas.json
+
+# Ambiente virtual
+.venv/
+
+# Artefatos do Python
+__pycache__/
+*.pyc
+*.egg-info/
+
+# Cache do pytest
+.pytest_cache/

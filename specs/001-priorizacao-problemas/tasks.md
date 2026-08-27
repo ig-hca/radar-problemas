@@ -29,10 +29,10 @@ Projeto único: `src/` para o código, `tests/` para os testes, `data/` para o a
 
 **Purpose**: esqueleto do projeto, dependências e configuração do pytest.
 
-- [ ] T001 Criar os diretórios `src/`, `tests/` e `data/` na raiz, com `data/.gitkeep` para versionar a pasta vazia — **Pronto quando**: os três diretórios existem e `data/.gitkeep` está rastreado pelo git.
-- [ ] T002 [P] Criar `pyproject.toml` na raiz declarando o projeto, `requires-python = ">=3.11"` e `[tool.pytest.ini_options]` com `pythonpath = ["src"]` — **Pronto quando**: `pytest` executado da raiz termina com "no tests ran" em vez de erro de configuração ou de importação.
-- [ ] T003 [P] Criar `requirements.txt` na raiz com `streamlit` e `pytest`, sem nenhuma outra dependência — **Pronto quando**: `pip install -r requirements.txt` conclui e `streamlit --version` responde.
-- [ ] T004 [P] Criar `.gitignore` na raiz ignorando `data/problemas.json`, `.venv/`, `__pycache__/`, `*.pyc`, `.pytest_cache/` e `*.egg-info/` — **Pronto quando**: `git status` continua limpo depois de rodar o aplicativo e a suíte, e `git check-ignore data/problemas.json` confirma o arquivo ignorado.
+- [X] T001 Criar os diretórios `src/`, `tests/` e `data/` na raiz, com `data/.gitkeep` para versionar a pasta vazia — **Pronto quando**: os três diretórios existem e `data/.gitkeep` está rastreado pelo git.
+- [X] T002 [P] Criar `pyproject.toml` na raiz declarando o projeto, `requires-python = ">=3.11"` e `[tool.pytest.ini_options]` com `pythonpath = ["src"]` — **Pronto quando**: `pytest` executado da raiz termina com "no tests ran" em vez de erro de configuração ou de importação.
+- [X] T003 [P] Criar `requirements.txt` na raiz com `streamlit` e `pytest`, sem nenhuma outra dependência — **Pronto quando**: `pip install -r requirements.txt` conclui e `streamlit --version` responde.
+- [X] T004 [P] Criar `.gitignore` na raiz ignorando `data/problemas.json`, `.venv/`, `__pycache__/`, `*.pyc`, `.pytest_cache/` e `*.egg-info/` — **Pronto quando**: `git status` continua limpo depois de rodar o aplicativo e a suíte, e `git check-ignore data/problemas.json` confirma o arquivo ignorado.
 
 ---
 
@@ -42,8 +42,8 @@ Projeto único: `src/` para o código, `tests/` para os testes, `data/` para o a
 
 **⚠️ CRITICAL**: nenhuma história pode começar antes desta fase.
 
-- [ ] T005 Criar `src/dominio.py` com a dataclass `Problema` (`frozen=True`) contendo `id`, `titulo`, `descricao`, `publico`, `frequencia`, `intensidade`, `acesso`, `disposicao_pagar` e `registrado_em`, conforme [data-model.md](./data-model.md) — **Pronto quando**: `from dominio import Problema` funciona no pytest e o módulo não contém `import streamlit`.
-- [ ] T006 Adicionar a exceção `ErroDeValidacao` (com atributo `mensagens: list[str]`) em `src/dominio.py` — **Pronto quando**: `ErroDeValidacao(["x"]).mensagens == ["x"]` é verdadeiro no interpretador.
+- [X] T005 Criar `src/dominio.py` com a dataclass `Problema` (`frozen=True`) contendo `id`, `titulo`, `descricao`, `publico`, `frequencia`, `intensidade`, `acesso`, `disposicao_pagar` e `registrado_em`, conforme [data-model.md](./data-model.md) — **Pronto quando**: `from dominio import Problema` funciona no pytest e o módulo não contém `import streamlit`.
+- [X] T006 Adicionar a exceção `ErroDeValidacao` (com atributo `mensagens: list[str]`) em `src/dominio.py` — **Pronto quando**: `ErroDeValidacao(["x"]).mensagens == ["x"]` é verdadeiro no interpretador.
 
 **Checkpoint**: tipo base pronto — as histórias podem começar.
 
@@ -55,13 +55,13 @@ Projeto único: `src/` para o código, `tests/` para os testes, `data/` para o a
 
 **Independent Test**: registrar um único problema com as notas 4, 5, 3 e 2 e conferir que a lista exibe o score `3,50`.
 
-- [ ] T007 [US1] Escrever em `tests/test_dominio.py` os testes de `calcular_score` cobrindo `4,5,3,2 → 3.5`, `5,5,5,5 → 5.0`, `1,2,2,2 → 1.75`, `1,1,1,1 → 1.0` e `1,1,1,2 → 1.25` (FR-005) — **Pronto quando**: os cinco testes rodam e falham por `calcular_score` não existir.
-- [ ] T008 [US1] Implementar `calcular_score(problema) -> float` como média simples das quatro notas em `src/dominio.py` (FR-005) — **Pronto quando**: os testes de T007 passam.
-- [ ] T009 [US1] Escrever em `tests/test_dominio.py` os testes de `formatar_score` cobrindo `3.5 → "3,50"`, `5.0 → "5,00"`, `1.75 → "1,75"` e `1.0 → "1,00"` (FR-006, FR-007) — **Pronto quando**: os quatro testes rodam e falham por `formatar_score` não existir.
-- [ ] T010 [US1] Implementar `formatar_score(score) -> str` com duas casas e vírgula decimal em `src/dominio.py` (FR-006, FR-007) — **Pronto quando**: os testes de T009 passam.
-- [ ] T011 [US1] Escrever em `tests/test_dominio.py` os testes de `criar_problema` verificando `strip()` no título, `descricao`/`publico` ausentes virando `""`, `id` diferente entre duas chamadas e `registrado_em` em ISO 8601 (FR-001, FR-004) — **Pronto quando**: os testes rodam e falham por `criar_problema` não existir.
-- [ ] T012 [US1] Implementar `criar_problema(...) -> Problema` em `src/dominio.py`, gerando `id` com `uuid.uuid4()` e `registrado_em` com `datetime.now().isoformat(timespec="microseconds")` (FR-001) — **Pronto quando**: os testes de T011 passam. A chamada à validação entra na T026.
-- [ ] T013 [US1] Criar `src/app.py` com formulário Streamlit (título, descrição, público e quatro `number_input(value=3, step=1)` sem `min_value`/`max_value`) que guarda os problemas em `st.session_state["problemas"]` e exibe cada um com `formatar_score` (FR-001, FR-006, FR-007) — **Pronto quando**: `streamlit run src/app.py` registra um problema com notas 4, 5, 3, 2 e a tela mostra `3,50`.
+- [X] T007 [US1] Escrever em `tests/test_dominio.py` os testes de `calcular_score` cobrindo `4,5,3,2 → 3.5`, `5,5,5,5 → 5.0`, `1,2,2,2 → 1.75`, `1,1,1,1 → 1.0` e `1,1,1,2 → 1.25` (FR-005) — **Pronto quando**: os cinco testes rodam e falham por `calcular_score` não existir.
+- [X] T008 [US1] Implementar `calcular_score(problema) -> float` como média simples das quatro notas em `src/dominio.py` (FR-005) — **Pronto quando**: os testes de T007 passam.
+- [X] T009 [US1] Escrever em `tests/test_dominio.py` os testes de `formatar_score` cobrindo `3.5 → "3,50"`, `5.0 → "5,00"`, `1.75 → "1,75"` e `1.0 → "1,00"` (FR-006, FR-007) — **Pronto quando**: os quatro testes rodam e falham por `formatar_score` não existir.
+- [X] T010 [US1] Implementar `formatar_score(score) -> str` com duas casas e vírgula decimal em `src/dominio.py` (FR-006, FR-007) — **Pronto quando**: os testes de T009 passam.
+- [X] T011 [US1] Escrever em `tests/test_dominio.py` os testes de `criar_problema` verificando `strip()` no título, `descricao`/`publico` ausentes virando `""`, `id` diferente entre duas chamadas e `registrado_em` em ISO 8601 (FR-001, FR-004) — **Pronto quando**: os testes rodam e falham por `criar_problema` não existir.
+- [X] T012 [US1] Implementar `criar_problema(...) -> Problema` em `src/dominio.py`, gerando `id` com `uuid.uuid4()` e `registrado_em` com `datetime.now().isoformat(timespec="microseconds")` (FR-001) — **Pronto quando**: os testes de T011 passam. A chamada à validação entra na T026.
+- [X] T013 [US1] Criar `src/app.py` com formulário Streamlit (título, descrição, público e quatro `number_input(value=3, step=1)` sem `min_value`/`max_value`) que guarda os problemas em `st.session_state["problemas"]` e exibe cada um com `formatar_score` (FR-001, FR-006, FR-007) — **Pronto quando**: `streamlit run src/app.py` registra um problema com notas 4, 5, 3, 2 e a tela mostra `3,50`.
 
 **Checkpoint**: US1 funcional — registro e score visíveis, ainda em memória de sessão.
 
